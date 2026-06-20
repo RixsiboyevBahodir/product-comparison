@@ -7,7 +7,10 @@ type ComparisonTableProps = {
 
 export default function ComparisonTable({ products }: ComparisonTableProps) {
 
-  const [selectedIds, setSelectedIds] = useState<number[]>([])
+  const [selectedIds, setSelectedIds] = useState<number[]>(() => {
+    const stored = JSON.parse(localStorage.getItem('productId') || '[]')
+    return Array.isArray(stored) ? stored : []
+  })
 
   const deleteProduct = (id: number) => {
     const updated = selectedIds.filter((ids: number) => ids !== id)
@@ -16,9 +19,6 @@ export default function ComparisonTable({ products }: ComparisonTableProps) {
   }
 
   useEffect(() => {
-    const storedIds = JSON.parse(localStorage.getItem('productId') || '[]')
-    setSelectedIds(Array.isArray(storedIds) ? storedIds : [])
-
     const handleProductIdChanged = () => {
       const updated = JSON.parse(localStorage.getItem('productId') || '[]')
       setSelectedIds(Array.isArray(updated) ? updated : [])
