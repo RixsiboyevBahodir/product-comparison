@@ -53,5 +53,14 @@ export const products: Product[] = [
         ssd: 128,
         color: "Black",
         image: "https://asset.openshop.uz/uploads/products/photos/202603/wmfGS5ZOgiZY60GXmejdJNJIv3h0uo4r.jpg"
-    }
+    },
+    {
+        id: 6,
+        name: "iPhone 15",
+        price: 990,
+        ram: 12,
+        ssd: 256,
+        color: "Black",
+        image: "https://asset.openshop.uz/uploads/products/photos/202603/e0U5C6zm7W61UcdbEpYx4Dcfuv7dzxsb.jpg"
+    },
 ]
