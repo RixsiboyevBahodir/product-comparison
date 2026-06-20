@@ -5,9 +5,22 @@ type ComparisonTableProps = {
   products: Product[]
 }
 
+const comparisonRows = [
+  { label: 'Image', key: 'image' as const },
+  { label: 'Name', key: 'name' as const },
+  { label: 'Price', key: 'price' as const },
+  { label: 'Color', key: 'color' as const },
+  { label: 'SSD', key: 'ssd' as const },
+  { label: 'RAM', key: 'ram' as const },
+  { label: 'Remove', key: 'remove' as const },
+]
+
 export default function ComparisonTable({ products }: ComparisonTableProps) {
 
-  const [selectedIds, setSelectedIds] = useState<number[]>([])
+  const [selectedIds, setSelectedIds] = useState<number[]>(() => {
+    const stored = JSON.parse(localStorage.getItem('productId') || '[]')
+    return Array.isArray(stored) ? stored : []
+  })
 
   const deleteProduct = (id: number) => {
     const updated = selectedIds.filter((ids: number) => ids !== id)
@@ -16,9 +29,6 @@ export default function ComparisonTable({ products }: ComparisonTableProps) {
   }
 
   useEffect(() => {
-    const storedIds = JSON.parse(localStorage.getItem('productId') || '[]')
-    setSelectedIds(Array.isArray(storedIds) ? storedIds : [])
-
     const handleProductIdChanged = () => {
       const updated = JSON.parse(localStorage.getItem('productId') || '[]')
       setSelectedIds(Array.isArray(updated) ? updated : [])
@@ -75,54 +85,47 @@ export default function ComparisonTable({ products }: ComparisonTableProps) {
 
           <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full border-separate border-spacing-y-4">
-              <thead>
-                <tr>
-                  <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-                    image
-                  </th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-                    Name
-                  </th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-                    Price
-                  </th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-                    Color
-                  </th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-                    SSD
-                  </th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-                    RAM
-                  </th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-                    Remove
-                  </th>
-                </tr>
-              </thead>
               <tbody>
-                {selectedProducts.map((product) => (
-                  <tr key={product.id} className="rounded-[28px]">
-                    <td className="px-5 py-5 align-top">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="h-full w-full object-contain max-w-24 rounded-2xl border"
-                      />
-                    </td>
-                    <td className="px-5 py-5 text-right text-sm font-semibold text-slate-900">{product.name}</td>
-                    <td className={`px-5 py-5 text-right text-sm ${valueClass('price')}`}>{product.price}$</td>
-                    <td className={`px-5 py-5 text-right text-sm ${valueClass('color')}`}>{product.color}</td>
-                    <td className={`px-5 py-5 text-right text-sm ${valueClass('ssd')}`}>{product.ssd}</td>
-                    <td className={`px-5 py-5 text-right text-sm ${valueClass('ram')}`}>{product.ram}</td>
-                    <td className="text-right">
-                      <button
-                        className="bg-red-500 py-2 px-5 rounded-xl text-sm font-semibold text-white hover:opacity-70 active:opacity-25 transition-all duration-200 cursor-pointer"
-                        onClick={() => deleteProduct(product.id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
+                {comparisonRows.map((row) => (
+                  <tr key={row.key} className="rounded-[28px] bg-white shadow-sm">
+                    <th className="whitespace-nowrap px-5 py-5 text-left text-xs font-semibold uppercase tracking-[0.24em] text-slate-500 align-top">
+                      {row.label}
+                    </th>
+                    {selectedProducts.map((product) => {
+                      const valueClassName =
+                        row.key === 'price' || row.key === 'color' || row.key === 'ssd' || row.key === 'ram'
+                          ? valueClass(row.key)
+                          : 'text-slate-900'
+
+                      return (
+                        <td key={product.id} className="px-5 py-5 text-right text-sm align-top">
+                          {row.key === 'image' ? (
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="h-full w-full object-contain max-w-24 rounded-2xl border"
+                            />
+                          ) : row.key === 'name' ? (
+                            <p className="font-semibold text-slate-900">{product.name}</p>
+                          ) : row.key === 'price' ? (
+                            <p className={valueClassName}>{product.price}$</p>
+                          ) : row.key === 'color' ? (
+                            <p className={valueClassName}>{product.color}</p>
+                          ) : row.key === 'ssd' ? (
+                            <p className={valueClassName}>{product.ssd}</p>
+                          ) : row.key === 'ram' ? (
+                            <p className={valueClassName}>{product.ram}</p>
+                          ) : (
+                            <button
+                              className="bg-red-500 py-2 px-5 rounded-xl text-sm font-semibold text-white hover:opacity-70 active:opacity-25 transition-all duration-200 cursor-pointer"
+                              onClick={() => deleteProduct(product.id)}
+                            >
+                              Delete
+                            </button>
+                          )}
+                        </td>
+                      )
+                    })}
                   </tr>
                 ))}
               </tbody>

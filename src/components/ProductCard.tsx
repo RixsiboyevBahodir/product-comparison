@@ -3,13 +3,20 @@ import type { Product } from "../data/products";
 export default function ProductCard({ id, name, color, ssd, ram, image, price }: Product) {
 
     const addToLocalStorage = (id: number) => {
-        const productId = JSON.parse(localStorage.getItem('productId') || '[]')
+        const productId: number[] = JSON.parse(localStorage.getItem('productId') || '[]')
         const exists = productId.some((ids: number) => ids === id)
-        if (!exists) {
-            localStorage.setItem('productId', JSON.stringify([...productId, id]))
-        } else {
+
+        if (exists) {
             alert("This product is in the cart.")
+            return
         }
+
+        if (productId.length >= 3) {
+            alert("You can only compare up to 3 products.")
+            return
+        }
+
+        localStorage.setItem('productId', JSON.stringify([...productId, id]))
         window.dispatchEvent(new Event('productIdChanged'))
     }
 
