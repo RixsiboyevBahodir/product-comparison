@@ -63,4 +63,31 @@ export const products: Product[] = [
         color: "Black",
         image: "https://asset.openshop.uz/uploads/products/photos/202603/e0U5C6zm7W61UcdbEpYx4Dcfuv7dzxsb.jpg"
     },
+    {
+        id: 7,
+        name: "Samsung S24",
+        price: 999,
+        ram: 12,
+        ssd: 256,
+        color: "White",
+        image: "https://asset.openshop.uz/uploads/products/photos/202603/dodTUhSnBEGvdWZz5r7F8afWbIhyjbXX.jpg"
+    },
+    {
+        id: 8,
+        name: "Xiaomi X8",
+        price: 450,
+        ram: 8,
+        ssd: 256,
+        color: "White",
+        image: "https://asset.openshop.uz/uploads/products/photos/202604/BSX6mvO5xMtVpEGzaGn9cP5ENtyVJwZ9.jpg"
+    },
+    {
+        id: 9,
+        name: "Xiaomi X8",
+        price: 450,
+        ram: 8,
+        ssd: 256,
+        color: "Black",
+        image: "https://asset.openshop.uz/uploads/products/photos/202604/x4eVXr7MKnxXanHfkufGagtRERTXNO5t.jpg"
+    },
 ]
