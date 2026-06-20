@@ -12,21 +12,34 @@ const bindingMap = {
   'win32:arm64': '@rolldown/binding-win32-arm64-msvc',
 }
 
-const key = `${platform}:${arch}`
-const pkg = bindingMap[key]
+const tailwindMap = {
+  'linux:x64': '@tailwindcss/oxide-linux-x64-gnu',
+  'linux:arm64': '@tailwindcss/oxide-linux-arm64-gnu',
+  'linux:arm': '@tailwindcss/oxide-linux-arm-gnueabihf',
+  'darwin:x64': '@tailwindcss/oxide-darwin-x64',
+  'darwin:arm64': '@tailwindcss/oxide-darwin-arm64',
+  'win32:x64': '@tailwindcss/oxide-win32-x64-msvc',
+  'win32:arm64': '@tailwindcss/oxide-win32-arm64-msvc',
+}
 
-if (!pkg) {
+const key = `${platform}:${arch}`
+const packages = []
+
+if (bindingMap[key]) packages.push(bindingMap[key])
+if (tailwindMap[key]) packages.push(tailwindMap[key])
+
+if (packages.length === 0) {
   process.exit(0)
 }
 
-const targetPath = `node_modules/${pkg}`
-if (existsSync(targetPath)) {
+const missingPackages = packages.filter((pkg) => !existsSync(`node_modules/${pkg}`))
+if (missingPackages.length === 0) {
   process.exit(0)
 }
 
 try {
-  execSync(`npm install --no-save ${pkg}`, { stdio: 'inherit' })
+  execSync(`npm install --no-save ${missingPackages.join(' ')}`, { stdio: 'inherit' })
 } catch (error) {
-  console.error(`Failed to install optional binding ${pkg}.`, error)
+  console.error(`Failed to install optional bindings: ${missingPackages.join(', ')}.`, error)
   process.exit(1)
 }
